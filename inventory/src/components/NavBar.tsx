@@ -43,7 +43,6 @@ const NavBar = () => {
         <button className="btn hover:bg-white text-[#7E2CE1] bg-[#F4F3F3] border-none text-2xl shadow-none p-2 ">
           <div className="indicator">
             <CiBellOn />
-            {/* <span className="badge badge-xs badge-primary indicator-item"></span> */}
           </div>
         </button>
         <button className="btn text-[#7E2CE1] bg-[#F4F3F3] border-none text-2xl shadow-none p-2 ">

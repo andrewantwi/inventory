@@ -2,12 +2,14 @@ import Card from "../components/Card";
 import { cardData, storeData, storeData2 } from "../assets/data";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Chart from "../components/Chart";
 
 interface Product {
   productCount: number;
 
   totalNumberPerProduct: number;
 
+  numberLeftSum: number;
   soldOutCount: number;
 
   inStockCount: number;
@@ -15,17 +17,12 @@ interface Product {
 
 function HomePage() {
   const [products, setProducts] = useState<Product>(); // Store fetched products
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     handleGetProducts();
   }, []);
 
   const handleGetProducts = async () => {
-    setLoading(true);
-    setError("");
-
     try {
       // Make the GET request
       const response = await axios.get<Product>(
@@ -35,9 +32,8 @@ function HomePage() {
       console.log("Fetched data successfully:", response.data);
     } catch (err) {
       console.error("Error fetching data:", err);
-      setError("Failed to fetch data. Please try again.");
     } finally {
-      setLoading(false);
+      console.error("Error fetching data:");
     }
   };
 
@@ -51,12 +47,15 @@ function HomePage() {
         <Card items="Available" number={products?.inStockCount} />
         <Card items="Sold Out" number={products?.soldOutCount} />
         <Card items="Total number" number={products?.totalNumberPerProduct} />
+        <Card items="Total number" number={products?.numberLeftSum} />
       </div>
       <div className="container mx-auto p-4">
         <div className="flex w-full">
           <div className="card mx-2 shadow-md p-4 bg-[#F4F3F3] w-[50%]">
             <div className="card-title text-black">Sales</div>
-            <div className="card-body"></div>
+            <div className="card-body">
+              <Chart />
+            </div>
           </div>
           <div className="card mx-2 p-4 shadow-md bg-[#F4F3F3] w-[30%]">
             <div className="card-title text-black">Top Item Categories</div>

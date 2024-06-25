@@ -81,7 +81,7 @@ const CategoriesPage = () => {
   return (
     <div>
       <div className="flex bg-[#F4F3F3] items-center justify-between p-4">
-        <div className="p-4 text-3xl text-black bg-[#F4F3F3]">categories</div>
+        <div className="p-4 text-3xl text-black bg-[#F4F3F3]">Categories</div>
         <div className="flex items-center">
           <div
             className="bg-[#4B03A4] text-white rounded-3xl px-4 py-2 mx-2 text-sm cursor-pointer"

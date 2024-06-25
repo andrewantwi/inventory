@@ -1,7 +1,6 @@
 import { IoHomeOutline } from "react-icons/io5";
 import {
   MdOutlineShoppingBag,
-  MdOutlineStorefront,
   MdRollerSkating,
   MdBackpack,
 } from "react-icons/md";
@@ -19,6 +18,7 @@ import {
 interface MenuItem {
   name: string;
   icon: JSX.Element;
+  link: string;
 }
 
 interface CardData {
@@ -41,13 +41,12 @@ interface StoreData2 {
 }
 
 export const menuItems: MenuItem[] = [
-  { name: "Home", icon: <IoHomeOutline /> },
-  { name: "Products", icon: <MdOutlineShoppingBag /> },
-  { name: "Categories", icon: <LuShapes /> },
-  { name: "Stores", icon: <MdOutlineStorefront /> },
-  { name: "Finances", icon: <CiMoneyBill /> },
-  { name: "Debtors", icon: <GiTakeMyMoney /> },
-  { name: "Settings", icon: <AiOutlineTool /> },
+  { name: "Home", icon: <IoHomeOutline />, link: "/" },
+  { name: "Products", icon: <MdOutlineShoppingBag />, link: "/products" },
+  { name: "Categories", icon: <LuShapes />, link: "/categories" },
+  { name: "Finances", icon: <CiMoneyBill />, link: "/finances" },
+  { name: "Debtors", icon: <GiTakeMyMoney />, link: "/debtors" },
+  { name: "Settings", icon: <AiOutlineTool />, link: "/settings" },
 ];
 
 export const cardData: CardData[] = [
