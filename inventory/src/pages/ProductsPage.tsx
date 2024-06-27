@@ -11,11 +11,21 @@ interface Product {
   soldOut: boolean | undefined;
   sellingPrice: number;
   totalNumber: number;
+  numberSold: number;
+  numberLeft: number;
+  totalAmount: number;
+  totalAmountSold: number;
   category: string;
+}
+
+interface Category {
+  _id: string;
+  name: string;
 }
 
 const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]); // State to store categories
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,7 +37,27 @@ const ProductsPage: React.FC = () => {
     handleGetProducts();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (isModalOpen) {
+      handleGetCategories(); // Fetch categories when the modal opens
+    }
+  }, [isModalOpen]);
+
+  const handleGetCategories = async () => {
+    try {
+      const response = await axios.get<Category[]>(
+        "http://localhost:3000/categories"
+      );
+      setCategories(response.data);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+      setError("Failed to fetch categories. Please try again.");
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     if (currentProduct) {
       setCurrentProduct({ ...currentProduct, [name]: value });
@@ -44,10 +74,7 @@ const ProductsPage: React.FC = () => {
       if (currentProduct._id === 0) {
         await axios.post("http://localhost:3000/products", currentProduct);
       } else {
-        await axios.put(
-          `http://localhost:3000/products/${currentProduct._id}`,
-          currentProduct
-        );
+        await axios.put(`http://localhost:3000/products`, currentProduct);
       }
       setIsModalOpen(false);
       setCurrentProduct(null);
@@ -78,7 +105,7 @@ const ProductsPage: React.FC = () => {
   };
 
   const handleEditClick = (product: Product) => {
-    setCurrentProduct(product);
+    setCurrentProduct({ ...product, numberSold: product.numberSold || 0 }); // Initialize numberSold
     setIsModalOpen(true);
   };
 
@@ -133,6 +160,10 @@ const ProductsPage: React.FC = () => {
                 soldOut: currentProduct?.soldOut,
                 sellingPrice: 0,
                 totalNumber: 0,
+                numberSold: 0,
+                numberLeft: 0,
+                totalAmount: 0,
+                totalAmountSold: 0,
                 category: "",
               });
               setIsModalOpen(true);
@@ -148,11 +179,17 @@ const ProductsPage: React.FC = () => {
             <tr>
               <th>Name</th>
               <th>Description</th>
-              <th>Cost Price</th>
+              <th>Number Sold</th>
+              <th>Number Left</th>
               <th>Status</th>
-              <th>Selling Price</th>
+              <th>Price</th>
+
               <th>Total Number</th>
-              <th>Category</th>
+
+              <th>Total Amount</th>
+
+              <th>Total Amount Sold</th>
+
               <th>Edit</th>
               <th>Delete</th>
             </tr>
@@ -162,7 +199,8 @@ const ProductsPage: React.FC = () => {
               <tr key={product._id}>
                 <td>{product.name}</td>
                 <td>{product.description}</td>
-                <td>{product.costPrice}</td>
+                <td>{product.numberSold}</td>
+                <td>{product.numberLeft}</td>
                 <td>
                   <span
                     className={`px-2 py-1 rounded-full text-sm ${
@@ -176,7 +214,8 @@ const ProductsPage: React.FC = () => {
                 </td>
                 <td>{product.sellingPrice}</td>
                 <td>{product.totalNumber}</td>
-                <td>{product.category}</td>
+                <td>{product.totalAmount}</td>
+                <td>{product.totalAmountSold}</td>
                 <td>
                   <TiEdit
                     className="cursor-pointer text-xl"
@@ -267,34 +306,56 @@ const ProductsPage: React.FC = () => {
                 />
               </div>
 
-              <div className="mb-4 bg-white">
-                <label className="block text-sm font-medium mb-2">
-                  Total Number
-                </label>
-                <input
-                  type="number"
-                  name="totalNumber"
-                  value={currentProduct?.totalNumber || 0}
-                  onChange={handleChange}
-                  className="input input-bordered w-full bg-white"
-                  placeholder="Total Number"
-                  required
-                />
-              </div>
+              {currentProduct?._id === 0 ? (
+                <div className="mb-4 bg-white">
+                  <label className="block text-sm font-medium mb-2">
+                    Total Number
+                  </label>
+                  <input
+                    type="number"
+                    name="totalNumber"
+                    value={currentProduct?.totalNumber || 0}
+                    onChange={handleChange}
+                    className="input input-bordered w-full bg-white"
+                    placeholder="Total Number"
+                    required
+                  />
+                </div>
+              ) : (
+                <div className="mb-4 bg-white">
+                  <label className="block text-sm font-medium mb-2">
+                    Number Sold
+                  </label>
+                  <input
+                    type="number"
+                    name="numberSold"
+                    value={currentProduct?.numberSold || 0}
+                    onChange={handleChange}
+                    className="input input-bordered w-full bg-white"
+                    placeholder="Number Sold"
+                    required
+                  />
+                </div>
+              )}
 
               <div className="mb-4 bg-white">
                 <label className="block text-sm font-medium mb-2">
                   Category
                 </label>
-                <input
-                  type="text"
+                <select
                   name="category"
                   value={currentProduct?.category || ""}
                   onChange={handleChange}
                   className="input input-bordered w-full bg-white"
-                  placeholder="Category"
                   required
-                />
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((category) => (
+                    <option key={category._id} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="flex justify-end space-x-4">
