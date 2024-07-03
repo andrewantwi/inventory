@@ -7,7 +7,7 @@ const NavBar = () => {
       <div className="navbar-start">
         <div className="dropdown">
           <div>
-            <a className="btn text-[#7E2CE1] text-xl border-none bg-[#F4F3F3]">
+            <a className=" text-[#8C2066] text-xl border-none bg-[#F4F3F3]">
               Inventory Buddy
             </a>
           </div>
@@ -32,20 +32,20 @@ const NavBar = () => {
           <input
             type="text"
             placeholder="Search"
-            className="input w-24 md:w-auto bg-[#F4F3F3] border-[#7E2CE1] rounded-full px-16 py-0 h-7 text-start"
+            className="input w-24 md:w-auto bg-[#F4F3F3] border-[#8C2066] rounded-full px-16 py-0 h-7 text-start"
           />
         </div>
       </div>
       <div className="navbar-end pr-4">
-        <div className="btn hover:bg-white text-[#7E2CE1] bg-[#F4F3F3] border-none text-2xl shadow-none p-2 ">
+        <div className="btn hover:bg-white text-[#8C2066] bg-[#F4F3F3] border-none text-2xl shadow-none p-2 ">
           <HiOutlineChatBubbleOvalLeft />
         </div>
-        <button className="btn hover:bg-white text-[#7E2CE1] bg-[#F4F3F3] border-none text-2xl shadow-none p-2 ">
+        <button className="btn hover:bg-white text-[#8C2066] bg-[#F4F3F3] border-none text-2xl shadow-none p-2 ">
           <div className="indicator">
             <CiBellOn />
           </div>
         </button>
-        <button className="btn text-[#7E2CE1] bg-[#F4F3F3] border-none text-2xl shadow-none p-2 ">
+        <button className="btn hover:bg-white text-[#8C2066] bg-[#F4F3F3] border-none text-2xl shadow-none p-2 ">
           <CiSettings />
         </button>
         <div className="dropdown dropdown-end">
@@ -54,7 +54,7 @@ const NavBar = () => {
             role="button"
             className="btn btn-ghost btn-circle avatar text-white flex justify-center"
           >
-            <div className="w-10 rounded-full bg-[#7E2CE1] "></div>
+            <div className="w-10 rounded-full bg-[#8C2066] "></div>
           </div>
           <ul
             tabIndex={0}

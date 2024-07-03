@@ -25,14 +25,14 @@ const Layout: React.FC = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-60 min-h-full text-white font-semibold bg-[#7E2CE1] rounded-r-xl">
+          <ul className="menu p-4 w-60 min-h-full text-white font-semibold bg-[#11403B] rounded-r-xl">
             {menuItems.map((item) => (
               <li
                 key={item.name}
                 className={`my-2 ${
                   activeItem === item.name
-                    ? "bg-[#924FF3] rounded-md"
-                    : "hover:bg-[#924FF3] rounded-md"
+                    ? "bg-[#11403B] rounded-md"
+                    : "hover:bg-[#04D9B2] rounded-md"
                 }`}
                 onClick={() => handleItemClick(item.name)}
               >

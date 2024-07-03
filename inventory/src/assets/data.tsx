@@ -50,22 +50,22 @@ export const menuItems: MenuItem[] = [
 ];
 
 export const cardData: CardData[] = [
-  { id: "shirt", bgColor: "#E5D5F9", textColor: "#4B03A4", icon: FaTshirt },
-  { id: "hat", bgColor: "#E5D5F9", textColor: "#4B03A4", icon: FaHatCowboy },
-  { id: "bag", bgColor: "#E5D5F9", textColor: "#4B03A4", icon: FaShoppingBag },
+  { id: "shirt", bgColor: "#04D9B2", textColor: "#11403B", icon: FaTshirt },
+  { id: "hat", bgColor: "#04D9B2", textColor: "#11403B", icon: FaHatCowboy },
+  { id: "bag", bgColor: "#04D9B2", textColor: "#11403B", icon: FaShoppingBag },
   {
     id: "skating",
-    bgColor: "#E5D5F9",
-    textColor: "#4B03A4",
+    bgColor: "#04D9B2",
+    textColor: "#11403B",
     icon: MdRollerSkating,
   },
   {
     id: "backpack",
-    bgColor: "#E5D5F9",
-    textColor: "#4B03A4",
+    bgColor: "#04D9B2",
+    textColor: "#11403B",
     icon: MdBackpack,
   },
-  { id: "glasses", bgColor: "#E5D5F9", textColor: "#4B03A4", icon: FaGlasses },
+  { id: "glasses", bgColor: "#04D9B2", textColor: "#11403B", icon: FaGlasses },
 ];
 
 export const storeData: StoreData[] = [

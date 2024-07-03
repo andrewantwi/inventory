@@ -1,5 +1,12 @@
 import { PureComponent } from "react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 
 interface ChartProps<T> {
   data: T[];
@@ -19,7 +26,8 @@ export default class Chart<T extends object> extends PureComponent<
           {/* Use the passed props directly */}
           <XAxis dataKey={xKey as string} />
           <YAxis />
-          <Bar dataKey={yKey as string} fill="#8884d8" />
+          <Tooltip />
+          <Bar dataKey={yKey as string} fill="#2a958a" />
         </BarChart>
       </ResponsiveContainer>
     );

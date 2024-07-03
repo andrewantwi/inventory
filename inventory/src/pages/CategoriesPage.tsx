@@ -1,7 +1,10 @@
+// CategoriesPage.tsx
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { GiTrousers } from "react-icons/gi";
-import { MdOutlineDeleteOutline } from "react-icons/md"; // Add delete icon
+import { MdOutlineDeleteOutline } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 interface Category {
   _id: string;
@@ -21,7 +24,9 @@ const CategoriesPage: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
     null
-  ); // State for delete modal
+  );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     handleGetCategories();
@@ -41,19 +46,11 @@ const CategoriesPage: React.FC = () => {
     setError("");
 
     try {
-      // Remove _id from the data being sent
       await axios.post("http://localhost:3000/categories", formData);
-
       setIsModalOpen(false);
-      console.log("Category added successfully");
-
-      // Clear form
       setFormData({ name: "", total: 0 });
-
-      // Re-fetch categories to update counts
       handleGetCategories();
     } catch (err) {
-      console.error("Error adding category:", err);
       setError("Failed to add the category. Please try again.");
     } finally {
       setLoading(false);
@@ -69,9 +66,7 @@ const CategoriesPage: React.FC = () => {
         "http://localhost:3000/categories"
       );
       setCategories(response.data);
-      console.log("Fetched categories successfully:", response.data);
     } catch (err) {
-      console.error("Error fetching categories:", err);
       setError("Failed to fetch categories. Please try again.");
     } finally {
       setLoading(false);
@@ -96,11 +91,14 @@ const CategoriesPage: React.FC = () => {
       setCategoryToDelete(null);
       handleGetCategories();
     } catch (err) {
-      console.error("Error deleting category:", err);
       setError("Failed to delete the category. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCardClick = (categoryId: string) => {
+    navigate(`/products/${categoryId}`);
   };
 
   return (
@@ -109,7 +107,7 @@ const CategoriesPage: React.FC = () => {
         <div className="p-4 text-3xl text-black bg-[#F4F3F3]">Categories</div>
         <div className="flex items-center">
           <div
-            className="bg-[#4B03A4] text-white rounded-3xl px-4 py-2 mx-2 text-sm cursor-pointer"
+            className="bg-[#04D9B2] text-white rounded-3xl px-4 py-2 mx-2 text-sm cursor-pointer"
             onClick={() => {
               setFormData({ name: "", total: 0 });
               setIsModalOpen(true);
@@ -129,9 +127,7 @@ const CategoriesPage: React.FC = () => {
             <div className="bg-white rounded-lg p-8 z-10 shadow-lg w-full max-w-md mx-auto">
               <form onSubmit={handleSubmit}>
                 <h2 className="text-2xl mb-4">Add Category</h2>
-
                 {error && <div className="text-red-500">{error}</div>}
-
                 <div className="mb-4 bg-white">
                   <label className="block text-sm font-medium mb-2">Name</label>
                   <input
@@ -144,7 +140,6 @@ const CategoriesPage: React.FC = () => {
                     required
                   />
                 </div>
-
                 <div className="flex justify-end space-x-4">
                   <button
                     type="button"
@@ -165,31 +160,31 @@ const CategoriesPage: React.FC = () => {
             </div>
           </div>
         )}
-
         {categories.map((category) => (
           <div
             key={category._id}
-            className="w-76 shadow-xl bg-[#F2F2F2] p-2 rounded-lg relative" // Added relative for positioning
+            className="w-76 shadow-xl bg-[#eff0f0] p-2 rounded-lg relative cursor-pointer" // Added cursor-pointer
+            onClick={() => handleCardClick(category._id)} // Navigate on click
           >
-            <div className="flex justify-center items-center text-4xl text-[#4805A6] bg-[#DED0F2] p-16 rounded-lg">
+            <div className="flex justify-center items-center text-4xl text-[#11403B] bg-[#dee4e4] p-16 rounded-lg">
               <GiTrousers />
             </div>
             <div className="p-4 flex justify-between items-center">
-              {" "}
-              {/* Added flex and justify-between */}
               <div>
                 <div className="font-bold text-black">{category.name}</div>
                 <div className="text-sm">{category.total} items</div>
               </div>
               <MdOutlineDeleteOutline
-                className="cursor-pointer text-xl text-red-600"
-                onClick={() => handleDeleteClick(category)}
+                className="cursor-pointer text-xl text-[#11403B]"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevents click event from bubbling up to the card
+                  handleDeleteClick(category);
+                }}
               />
             </div>
           </div>
         ))}
       </div>
-
       {isDeleteModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 text-black">
           <div

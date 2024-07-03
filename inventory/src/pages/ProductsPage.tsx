@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TiEdit } from "react-icons/ti";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 interface Product {
   _id: number;
@@ -24,8 +25,9 @@ interface Category {
 }
 
 const ProductsPage: React.FC = () => {
+  const { categoryId } = useParams<{ categoryId: string }>(); // Extract categoryId
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]); // State to store categories
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,11 +37,11 @@ const ProductsPage: React.FC = () => {
 
   useEffect(() => {
     handleGetProducts();
-  }, []);
+  }, [categoryId]); // Fetch products when categoryId changes
 
   useEffect(() => {
     if (isModalOpen) {
-      handleGetCategories(); // Fetch categories when the modal opens
+      handleGetCategories();
     }
   }, [isModalOpen]);
 
@@ -52,6 +54,28 @@ const ProductsPage: React.FC = () => {
     } catch (err) {
       console.error("Error fetching categories:", err);
       setError("Failed to fetch categories. Please try again.");
+    }
+  };
+
+  const handleGetProducts = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      let response;
+      if (categoryId && categoryId !== "") {
+        response = await axios.get<Product[]>(
+          `http://localhost:3000/products/cat/${categoryId}`
+        );
+      } else {
+        response = await axios.get<Product[]>(`http://localhost:3000/products`);
+      }
+      setProducts(response.data);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("Failed to fetch products. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,23 +106,6 @@ const ProductsPage: React.FC = () => {
     } catch (err) {
       console.error("Error submitting form:", err);
       setError("Failed to submit the form. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGetProducts = async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await axios.get<Product[]>(
-        "http://localhost:3000/products"
-      );
-      setProducts(response.data);
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      setError("Failed to fetch data. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -146,18 +153,18 @@ const ProductsPage: React.FC = () => {
               className="input w-24 md:w-auto bg-white text-[#4B03A4] rounded-lg px-16 py-4 h-7 text-start"
             />
           </div>
-          <div className="bg-[#AA77F2] text-[#4B03A4] rounded-xl px-8 py-2 mx-2 text-sm">
+          <div className="bg-[#11403B] text-[#04D9B2] rounded-xl px-8 py-2 mx-2 text-sm">
             Filter By
           </div>
           <div
-            className="bg-[#4B03A4] text-white rounded-3xl px-4 py-2 mx-2 text-sm cursor-pointer"
+            className="bg-[#04D9B2] text-white rounded-3xl px-4 py-2 mx-2 text-sm cursor-pointer"
             onClick={() => {
               setCurrentProduct({
                 _id: 0,
                 name: "",
                 description: "",
                 costPrice: 0,
-                soldOut: currentProduct?.soldOut,
+                soldOut: false,
                 sellingPrice: 0,
                 totalNumber: 0,
                 numberSold: 0,
@@ -183,13 +190,9 @@ const ProductsPage: React.FC = () => {
               <th>Number Left</th>
               <th>Status</th>
               <th>Price</th>
-
               <th>Total Number</th>
-
               <th>Total Amount</th>
-
               <th>Total Amount Sold</th>
-
               <th>Edit</th>
               <th>Delete</th>
             </tr>
@@ -205,8 +208,8 @@ const ProductsPage: React.FC = () => {
                   <span
                     className={`px-2 py-1 rounded-full text-sm ${
                       product.soldOut
-                        ? "bg-[#4B03A4] text-white"
-                        : "bg-[#4B03A4] text-white"
+                        ? "bg-[#2a958a] text-white"
+                        : "bg-[#04D9B2] text-white"
                     }`}
                   >
                     {product.soldOut ? "Sold Out" : "Active"}

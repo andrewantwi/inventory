@@ -93,10 +93,8 @@ const DebtorsPage: React.FC = () => {
 
     try {
       if (currentDebtor) {
-        // Edit existing debtor
         await axios.put(`http://localhost:3000/debtors/`, formData);
       } else {
-        // Create new debtor
         await axios.post("http://localhost:3000/debtors", formData);
       }
       setIsModalOpen(false);
@@ -169,11 +167,11 @@ const DebtorsPage: React.FC = () => {
               className="input w-24 md:w-auto bg-white text-[#4B03A4] rounded-lg px-16 py-4 h-7 text-start"
             />
           </div>
-          <div className="bg-[#AA77F2] text-[#4B03A4] rounded-xl px-8 py-2 mx-2 text-sm">
+          <div className="bg-[#11403B] text-[#04D9B2] rounded-xl px-8 py-2 mx-2 text-sm">
             Filter By
           </div>
           <div
-            className="bg-[#4B03A4] text-white rounded-3xl px-4 py-2 mx-2 text-sm cursor-pointer"
+            className="bg-[#04D9B2] text-white rounded-3xl px-4 py-2 mx-2 text-sm cursor-pointer"
             onClick={() => {
               setFormData({
                 name: "",

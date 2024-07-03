@@ -52,7 +52,7 @@ function HomePage() {
       <div className="p-4 text-3xl text-black bg-[#F4F3F3] ">
         Recent Activity
       </div>
-      <div className="bg-[#F4F3F3] p-4 grid grid-cols-2 grid-rows-2 md:grid-cols-5 md:grid-rows-1">
+      <div className="bg-[#F4F3F3] gap-1 p-4 grid grid-cols-2 grid-rows-2 md:grid-cols-5 md:grid-rows-1">
         <Card items="Products" number={products?.productCount} />
         <Card items="Available" number={products?.inStockCount} />
         <Card items="Number Sold" number={products?.numberSold} />
