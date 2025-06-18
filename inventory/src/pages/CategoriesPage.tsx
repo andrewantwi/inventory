@@ -116,7 +116,7 @@ const CategoriesPage: React.FC = () => {
               setIsModalOpen(true);
             }}
           >
-            + Add Category
+            + ADD Category
           </div>
         </div>
       </div>
