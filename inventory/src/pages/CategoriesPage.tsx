@@ -1,30 +1,36 @@
 // CategoriesPage.tsx
 
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { GiTrousers } from "react-icons/gi";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
+ 
 interface Category {
-  _id: string;
+  id: number;
   name: string;
-  total: number;
+  description?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const CategoriesPage: React.FC = () => {
+
+   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState<Omit<Category, "_id">>({
+  const [formData, setFormData] = useState({
     name: "",
-    total: 0,
+    description: "",
   });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
-    null
-  );
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
 
   const navigate = useNavigate();
 
@@ -46,11 +52,12 @@ const CategoriesPage: React.FC = () => {
     setError("");
 
     try {
-      await axios.post("http://localhost:3000/categories", formData);
+      await axios.post(`${baseUrl}/categories`, formData);
       setIsModalOpen(false);
-      setFormData({ name: "", total: 0 });
+      setFormData({ name: "", description: "" });
       handleGetCategories();
     } catch (err) {
+      console.error("Error adding category:", err);
       setError("Failed to add the category. Please try again.");
     } finally {
       setLoading(false);
@@ -62,9 +69,7 @@ const CategoriesPage: React.FC = () => {
     setError("");
 
     try {
-      const response = await axios.get<Category[]>(
-        "http://localhost:3000/categories"
-      );
+      const response = await axios.get<Category[]>(`${baseUrl}/categories/`);
       setCategories(response.data);
     } catch (err) {
       setError("Failed to fetch categories. Please try again.");
@@ -84,9 +89,7 @@ const CategoriesPage: React.FC = () => {
     setError("");
 
     try {
-      await axios.delete(
-        `http://localhost:3000/categories/${categoryToDelete._id}`
-      );
+      await axios.delete(`${baseUrl}/categories/${categoryToDelete.id}`);
       setIsDeleteModalOpen(false);
       setCategoryToDelete(null);
       handleGetCategories();
@@ -97,7 +100,7 @@ const CategoriesPage: React.FC = () => {
     }
   };
 
-  const handleCardClick = (categoryId: string) => {
+  const handleCardClick = (categoryId: number) => {
     navigate(`/products/${categoryId}`);
   };
 
@@ -109,7 +112,7 @@ const CategoriesPage: React.FC = () => {
           <div
             className="bg-[#04D9B2] text-white rounded-3xl px-4 py-2 mx-2 text-sm cursor-pointer"
             onClick={() => {
-              setFormData({ name: "", total: 0 });
+              setFormData({ name: "", description: "" });
               setIsModalOpen(true);
             }}
           >
@@ -117,6 +120,7 @@ const CategoriesPage: React.FC = () => {
           </div>
         </div>
       </div>
+
       <div className="grid md:grid-cols-3 grid-cols-2 gap-x-4 gap-y-4 p-10">
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 text-black">
@@ -128,16 +132,27 @@ const CategoriesPage: React.FC = () => {
               <form onSubmit={handleSubmit}>
                 <h2 className="text-2xl mb-4">Add Category</h2>
                 {error && <div className="text-red-500">{error}</div>}
-                <div className="mb-4 bg-white">
+                <div className="mb-4">
                   <label className="block text-sm font-medium mb-2">Name</label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="input input-bordered w-full bg-white"
+                    className="input input-bordered w-full"
                     placeholder="Name"
                     required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-2">Description</label>
+                  <input
+                    type="text"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="input input-bordered w-full"
+                    placeholder="Description"
                   />
                 </div>
                 <div className="flex justify-end space-x-4">
@@ -160,11 +175,13 @@ const CategoriesPage: React.FC = () => {
             </div>
           </div>
         )}
+
         {categories.map((category) => (
-          <div
-            key={category._id}
-            className="w-76 shadow-xl bg-[#eff0f0] p-2 rounded-lg relative cursor-pointer" // Added cursor-pointer
-            onClick={() => handleCardClick(category._id)} // Navigate on click
+          <Link to={`/products/${category.id}`}
+
+            key={category.id}
+            className="w-76 shadow-xl bg-[#eff0f0] p-2 rounded-lg relative cursor-pointer"
+            onClick={() => handleCardClick(category.id)}
           >
             <div className="flex justify-center items-center text-4xl text-[#11403B] bg-[#dee4e4] p-16 rounded-lg">
               <GiTrousers />
@@ -172,19 +189,20 @@ const CategoriesPage: React.FC = () => {
             <div className="p-4 flex justify-between items-center">
               <div>
                 <div className="font-bold text-black">{category.name}</div>
-                <div className="text-sm">{category.total} items</div>
+                <div className="text-sm">{category.description || "No description"}</div>
               </div>
               <MdOutlineDeleteOutline
                 className="cursor-pointer text-xl text-[#11403B]"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevents click event from bubbling up to the card
+                  e.stopPropagation();
                   handleDeleteClick(category);
                 }}
               />
             </div>
-          </div>
+          </Link>
         ))}
       </div>
+
       {isDeleteModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 text-black">
           <div
