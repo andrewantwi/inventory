@@ -6,8 +6,8 @@ import Chart from "../components/Chart";
 import { NavLink } from "react-router-dom";
 
 interface Product {
-  productCount: number;
-  totalNumberPerProduct: number;
+  productName: string;
+  totalQuantitySold: number;
   numberLeftSum: number;
   soldOutCount: number;
   numberSold: number;
@@ -33,7 +33,7 @@ function HomePage() {
   const handleGetProducts = async () => {
     try {
       const response = await axios.get<Product>(
-        "http://localhost:3000/products/counts"
+        "http://localhost:8000/api/v1/analytics/low-stock"
       );
       setProducts(response.data);
     } catch (err) {

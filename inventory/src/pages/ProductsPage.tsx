@@ -213,13 +213,13 @@ const ProductsPage = () => {
           )}
           {products.map((product) => (
             <tr key={product.id} className="border-b border-gray-100 hover:bg-gray-50">
-              <td className="p-2">{product.sku}</td>
-              <td className="p-2">{product.name}</td>
-              <td className="p-2">{product.description || "No description"}</td>
-              <td className="p-2">{product.quantity}</td>
-              <td className="p-2">{product.price}</td>
-              <td className="p-2">{product.low_stock_threshold}</td>
-              <td className="p-2">
+              <td className="p-6">{product.sku}</td>
+              <td className="p-6">{product.name}</td>
+              <td className="p-6">{product.description || "No description"}</td>
+              <td className="p-6">{product.quantity}</td>
+              <td className="p-6">{product.price}</td>
+              <td className="p-6">{product.low_stock_threshold}</td>
+              <td className="p-6">
                 {categories.find((cat) => cat.id === product.category_id)?.name ||
                   "Unknown"}
               </td>
