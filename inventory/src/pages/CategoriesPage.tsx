@@ -106,8 +106,8 @@ const CategoriesPage: React.FC = () => {
 
   return (
     <div>
-      <div className="flex bg-[#F4F3F3] items-center justify-between p-4">
-        <div className="p-4 text-3xl text-black bg-[#F4F3F3]">Categories</div>
+      <div className="flex bg-[#181D26] items-center justify-between px-8 m-4 border-none rounded-lg">
+        <div className="p-4 text-3xl text-white">Categories</div>
         <div className="flex items-center">
           <div
             className="bg-[#04D9B2] text-white rounded-3xl px-4 py-2 mx-2 text-sm cursor-pointer"
@@ -123,7 +123,7 @@ const CategoriesPage: React.FC = () => {
 
       <div className="grid md:grid-cols-3 grid-cols-2 gap-x-4 gap-y-4 p-10">
         {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center z-50 text-black">
+          <div className="fixed inset-0 flex items-center justify-center z-50 text-white">
             <div
               className="fixed inset-0 bg-black opacity-50 backdrop-blur-sm"
               onClick={() => setIsModalOpen(false)}
@@ -180,15 +180,15 @@ const CategoriesPage: React.FC = () => {
           <Link to={`/products/${category.id}`}
 
             key={category.id}
-            className="w-76 shadow-xl bg-[#eff0f0] p-2 rounded-lg relative cursor-pointer"
+            className="w-76 shadow-xl bg-[#181D26] p-2 rounded-lg relative cursor-pointer"
             onClick={() => handleCardClick(category.id)}
           >
-            <div className="flex justify-center items-center text-4xl text-[#11403B] bg-[#dee4e4] p-16 rounded-lg">
+            <div className="flex justify-center items-center text-4xl text-white bg-black p-16 rounded-lg">
               <GiTrousers />
             </div>
             <div className="p-4 flex justify-between items-center">
               <div>
-                <div className="font-bold text-black">{category.name}</div>
+                <div className="font-bold text-white">{category.name}</div>
                 <div className="text-sm">{category.description || "No description"}</div>
               </div>
               <MdOutlineDeleteOutline
@@ -204,7 +204,7 @@ const CategoriesPage: React.FC = () => {
       </div>
 
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 text-black">
+        <div className="fixed inset-0 flex items-center justify-center z-50 text-white">
           <div
             className="fixed inset-0 bg-black opacity-50 backdrop-blur-sm"
             onClick={() => setIsDeleteModalOpen(false)}

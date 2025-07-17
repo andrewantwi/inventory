@@ -12,12 +12,11 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <NavBar />
+    <div className="min-h-screen bg-black">
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content h-[1000px] overflow-auto">
-          <Outlet />
+          <Outlet/>
         </div>
         <div className="drawer-side">
           <label
@@ -25,7 +24,7 @@ const Layout: React.FC = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-60 min-h-full text-white font-semibold bg-[#11403B] rounded-r-xl">
+          <ul className="menu p-4 w-60 min-h-full text-white font-semibold bg-[#181D26] rounded-r-xl">
             {menuItems.map((item) => (
               <li
                 key={item.name}

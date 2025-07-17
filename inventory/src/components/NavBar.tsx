@@ -3,7 +3,7 @@ import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 const NavBar = () => {
   return (
-    <div className="navbar bg-[#F4F3F3]">
+    <div className="navbar bg-[#181D26] m-4">
       <div className="navbar-start">
         <div className="dropdown">
           <div>

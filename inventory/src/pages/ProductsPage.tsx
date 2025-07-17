@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { TiEdit } from "react-icons/ti";
 import { MdOutlineDeleteOutline } from "react-icons/md";
+import { format, parseISO } from "date-fns"; // Import date-fns
 
 interface Product {
   id: number;
@@ -25,23 +26,33 @@ interface Category {
 }
 
 const ProductsPage = () => {
-  const { categoryId } = useParams<{ categoryId: string }>(); // Extract categoryId from URL
+  const { categoryId } = useParams<{ categoryId: string }>();
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]); // Fixed from setproduct
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [error, setError] = useState("");
-  const [categoryName, setCategoryName] = useState<string>(""); // For displaying category name
+  const [categoryName, setCategoryName] = useState<string>("");
 
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  // Function to format ISO date
+  const formatDate = (isoDate: string) => {
+    try {
+      return format(parseISO(isoDate), "MMMM d, yyyy, h:mm a");
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid Date";
+    }
+  };
 
   useEffect(() => {
     fetchCategories();
     fetchProducts();
-  }, [categoryId]); // Re-fetch when categoryId changes
+  }, [categoryId]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -49,13 +60,11 @@ const ProductsPage = () => {
     try {
       let response;
       if (categoryId && !isNaN(Number(categoryId))) {
-        // Use the category-specific endpoint
         response = await axios.get<Product[]>(
           `${baseUrl}/products/by_category_id/${categoryId}`
         );
       } else {
-        // Fallback to fetching all products
-        setCategoryName(""); // Clear category name if no categoryId
+        setCategoryName("");
         response = await axios.get<Product[]>(`${baseUrl}/products/`);
       }
       setProducts(response.data);
@@ -75,7 +84,7 @@ const ProductsPage = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.get<Category[]>(`${baseUrl}/categories`);
+      const response = await axios.get<Category[]>(`${baseUrl}/categories/`);
       setCategories(response.data);
       if (categoryId && !isNaN(Number(categoryId))) {
         const category = response.data.find(
@@ -116,7 +125,7 @@ const ProductsPage = () => {
       setError("");
       try {
         if (currentProduct.id === 0) {
-          await axios.post(`${baseUrl}/products`, {
+          await axios.post(`${baseUrl}/products/`, {
             ...currentProduct,
             category_id: categoryId ? Number(categoryId) : currentProduct.category_id,
           });
@@ -150,7 +159,7 @@ const ProductsPage = () => {
     setLoading(true);
     setError("");
     try {
-      await axios.delete(`${baseUrl}/products/${productToDelete.id}`); // Fixed typo from /product/
+      await axios.delete(`${baseUrl}/products/${productToDelete.id}`);
       setIsDeleteModalOpen(false);
       setProductToDelete(null);
       fetchProducts();
@@ -162,76 +171,114 @@ const ProductsPage = () => {
     }
   };
 
-  return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">
-        Products {categoryName ? `in ${categoryName}` : ""}
-      </h1>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
-      {loading && <div className="text-black">Loading...</div>}
-      <button
-        className="btn bg-[#04D9B2] border-none text-white mb-4"
-        onClick={() => {
-          setCurrentProduct({
-            id: 0,
-            sku: "",
-            name: "",
-            description: "",
-            quantity: 0,
-            low_stock_threshold: 0,
-            price: 0,
-            category_id: categoryId ? Number(categoryId) : undefined,
-            created_at: "",
-            updated_at: "",
-          });
-          setIsModalOpen(true);
-        }}
-      >
-        Add New Product
-      </button>
+  
 
-      <table className="table w-full bg-white rounded-lg border border-gray-200 text-black">
+  return (
+    <div>
+     <div className="flex bg-[#181D26] items-center justify-between px-8 m-4 border-none rounded-lg">
+        <div className="p-4 text-3xl text-white">Products</div>
+        
+      </div>
+
+    <div className="p-4 rounded-lg border border-black m-4 bg-[#181D26]">
+      <div className="flex justify-between items-center">
+        <h1 className="text-xl font-bold">
+          Products {categoryName ? `in ${categoryName}` : ""}
+        </h1>
+        {error && <div className="text-red-500">{error}</div>}
+        {loading && <div className="text-gray-200">Loading...</div>}
+        <button
+          className="btn bg-[#00AB56] border-none text-[#FCFFFF] mb-4"
+          onClick={() => {
+            setCurrentProduct({
+              id: 0,
+              sku: "",
+              name: "",
+              description: "",
+              quantity: 0,
+              low_stock_threshold: 0,
+              price: 0,
+              category_id: categoryId ? Number(categoryId) : undefined,
+              created_at: "",
+              updated_at: "",
+            });
+            setIsModalOpen(true);
+          }}
+        >
+          Add New Product
+        </button>
+      </div>
+
+      <table className="table w-full">
         <thead>
-          <tr className="bg-gray-100 text-left border-b border-gray-200">
-            <th className="p-2">SKU</th>
-            <th className="p-2">Name</th>
-            <th className="p-2">Description</th>
-            <th className="p-2">Quantity</th>
-            <th className="p-2">Price</th>
-            <th className="p-2">Low Stock</th>
-            <th className="p-2">Category</th>
-            <th className="p-2">Actions</th>
+          <tr className="border-none rounded bg-gray-600 text-white">
+            <th className="p-4 text-left">Name</th>
+            <th className="p-4 text-left">SKU</th>
+            <th className="p-4 text-left">Description</th>
+            <th className="p-4 text-left">Stock</th>
+            <th className="p-4 text-left">Price</th>
+            <th className="p-4 text-left">Low Stock</th>
+            <th className="p-4 text-left">Category</th>
+            <th className="p-4 text-left">Created At</th>
+            <th className="p-4 text-left">Updated At</th>
+            <th className="p-4 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
           {products.length === 0 && !loading && (
             <tr>
-              <td colSpan={8} className="p-2 text-center">
+              <td colSpan={10} className="p-4 text-center">
                 No products found{categoryName ? ` in ${categoryName}` : ""}.
               </td>
             </tr>
           )}
           {products.map((product) => (
-            <tr key={product.id} className="border-b border-gray-100 hover:bg-gray-50">
-              <td className="p-6">{product.sku}</td>
-              <td className="p-6">{product.name}</td>
-              <td className="p-6">{product.description || "No description"}</td>
-              <td className="p-6">{product.quantity}</td>
-              <td className="p-6">{product.price}</td>
-              <td className="p-6">{product.low_stock_threshold}</td>
-              <td className="p-6">
-                {categories.find((cat) => cat.id === product.category_id)?.name ||
-                  "Unknown"}
+            
+            <tr key={product.id} className="border-b border-gray-800 hover:bg-gray-700">
+              <td className="p-4 text-white">{product.name}</td>
+              <td className="p-4">{product.sku}</td>
+              <td className="p-4">{product.description || "No description"}</td>
+             <td className="p-4">
+  <div
+    className={`p-1 rounded-lg font-semibold border-2 ${
+      (() => {
+        const threshold = product.low_stock_threshold ?? 1;
+        const percentage = product.quantity / threshold;
+
+        if (percentage <= 0.2)
+          return "bg-[rgba(220,38,38,0.1)] border-red-500 text-red-500";
+        if (percentage <= 0.5)
+          return "bg-[rgba(202,138,4,0.1)] border-yellow-500 text-yellow-500"; 
+        return "bg-[rgba(22,163,74,0.1)] border-green-500 text-green-500";
+      })()
+    }`}
+  >
+    {product.quantity}
+  </div>
+</td>
+
+              <td className="p-4">{product.price}</td>
+              <td className="p-4">{product.low_stock_threshold}</td>
+              <td className="p-4">
+                {categories.find((cat) => cat.id === product.category_id)?.name || "Unknown"}
               </td>
-              <td className="p-2 flex space-x-2 text-lg">
-                <TiEdit
-                  className="cursor-pointer text-black"
-                  onClick={() => handleEditClick(product)}
-                />
-                <MdOutlineDeleteOutline
-                  className="cursor-pointer text-[#04D9B2]"
-                  onClick={() => handleDeleteClick(product)}
-                />
+              <td className="p-4">{formatDate(product.created_at)}</td>
+              <td className="p-4">{formatDate(product.updated_at)}</td>
+              <td className="p-4">
+                <div className="flex items-center gap-4">
+                  <div
+                    className="cursor-pointer text-[#03A64A] border border-[#03A64A] p-2 rounded"
+                    onClick={() => handleEditClick(product)}
+                  >
+                    <TiEdit size={15} />
+                  </div>
+                  <div
+                    className="cursor-pointer text-[#F28322] border border-[#F28322] p-2 rounded"
+                    onClick={() => handleDeleteClick(product)}
+                  >
+                    <MdOutlineDeleteOutline size={15} />
+                  </div>
+                </div>
               </td>
             </tr>
           ))}
@@ -239,83 +286,83 @@ const ProductsPage = () => {
       </table>
 
       {isModalOpen && (
-        <div className="modal modal-open bg-opacity-50 fixed inset-0 z-50 flex justify-center items-center">
-          <div className="modal-box w-full max-w-2xl bg-white p-6 rounded">
+        <div className="modal modal-open bg-opacity-50 fixed inset-0 z-50 flex justify-center items-center ">
+          <div className="modal-box w-full max-w-2xl p-6 rounded  bg-[#181D26] text-gray-200">
             <h3 className="text-lg font-bold mb-4">
               {currentProduct?.id === 0 ? "Add Product" : "Edit Product"}
             </h3>
             {error && <div className="text-red-500 mb-4">{error}</div>}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-black">SKU</label>
+                <label className="block text-sm font-medium text-gray-200">SKU</label>
                 <input
                   type="text"
                   name="sku"
                   value={currentProduct?.sku || ""}
                   onChange={handleChange}
-                  className="input input-bordered w-full bg-white"
+                  className="input input-bordered w-full bg-gray-800"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-black">Name</label>
+                <label className="block text-sm font-medium text-gray-200">Name</label>
                 <input
                   type="text"
                   name="name"
                   value={currentProduct?.name || ""}
                   onChange={handleChange}
-                  className="input input-bordered w-full bg-white"
+                  className="input input-bordered w-full bg-gray-800"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-black">Description</label>
+                <label className="block text-sm font-medium text-gray-200">Description</label>
                 <input
                   type="text"
                   name="description"
                   value={currentProduct?.description || ""}
                   onChange={handleChange}
-                  className="input input-bordered w-full bg-white"
+                  className="input input-bordered w-full bg-gray-800"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-black">Quantity</label>
+                <label className="block text-sm font-medium text-gray-200">Quantity</label>
                 <input
                   type="number"
                   name="quantity"
                   value={currentProduct?.quantity || 0}
                   onChange={handleChange}
-                  className="input input-bordered w-full bg-white"
+                  className="input input-bordered w-full bg-gray-800"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-black">Low Stock Threshold</label>
+                <label className="block text-sm font-medium text-gray-200">Low Stock Threshold</label>
                 <input
                   type="number"
                   name="low_stock_threshold"
                   value={currentProduct?.low_stock_threshold || 0}
                   onChange={handleChange}
-                  className="input input-bordered w-full bg-white"
+                  className="input input-bordered w-full bg-gray-800"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-black">Price</label>
+                <label className="block text-sm font-medium text-gray-200">Price</label>
                 <input
                   type="number"
                   name="price"
                   value={currentProduct?.price || 0}
                   onChange={handleChange}
-                  className="input input-bordered w-full bg-white"
+                  className="input input-bordered w-full bg-gray-800"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-black">Category</label>
+                <label className="block text-sm font-medium text-gray-200">Category</label>
                 <select
                   name="category_id"
                   value={currentProduct?.category_id || ""}
                   onChange={handleChange}
-                  className="input input-bordered w-full bg-white"
+                  className="input input-bordered w-full bg-gray-800"
                 >
                   <option value="">Select Category</option>
                   {categories.map((category) => (
@@ -347,13 +394,13 @@ const ProductsPage = () => {
       )}
 
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 text-black">
+        <div className="fixed inset-0 flex items-center justify-center z-50 text-gray-200  bg-opacity-50">
           <div
             className="fixed inset-0 bg-black opacity-50 backdrop-blur-sm"
             onClick={() => setIsDeleteModalOpen(false)}
           ></div>
-          <div className="bg-white rounded-lg p-8 z-10 shadow-lg w-full max-w-md mx-auto">
-            <h2 className="text-2xl mb-4">Delete Product</h2> {/* Fixed title */}
+          <div className="bg-gray-800 rounded-lg p-8 z-10 shadow-lg w-full max-w-md mx-auto">
+            <h2 className="text-2xl mb-4">Delete Product</h2>
             <p>Are you sure you want to delete this product?</p>
             {error && <div className="text-red-500">{error}</div>}
             <div className="flex justify-end space-x-4 mt-4">
@@ -376,6 +423,7 @@ const ProductsPage = () => {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 };

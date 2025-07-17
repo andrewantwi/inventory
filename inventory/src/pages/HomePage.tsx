@@ -43,77 +43,58 @@ function HomePage() {
 
   return (
     <div className="min-h-screen overflow-auto">
-      <div className="p-4 text-3xl text-black bg-[#F4F3F3] ">Recent Activity</div>
-      <div className="bg-[#F4F3F3] gap-1 p-4 grid grid-cols-2 sm:grid-cols-1 md:grid-cols-5">
-        <Card items="Products" number={products?.productCount} />
-        <Card items="Available" number={products?.inStockCount} />
-        <Card items="Number Sold" number={products?.numberSold} />
-        <Card items="Total number Left" number={products?.totalNumberPerProduct} />
-        <Card items="Total number" number={products?.numberLeftSum} />
+       <div className="flex bg-[#181D26] items-center justify-between px-8 m-4 border-none rounded-lg">
+        <div className="p-4 text-3xl text-white">HomePage</div>
       </div>
-      <div className="container mx-auto p-4">
-        <div className="flex flex-col lg:flex-row w-full gap-4">
-          <NavLink to="finances" className="card shadow-md p-4 bg-[#F4F3F3] w-full lg:w-1/2">
-            <div className="card-title text-black">Sales</div>
-            <div className="card-body">
-              {products && (
-                <Chart data={transformProductData(products)} xKey="name" yKey="value" />
-              )}
-            </div>
-          </NavLink>
-          <NavLink to="categories" className="card shadow-md p-4 bg-[#F4F3F3] w-full lg:w-1/3">
-            <div className="card-title text-black">Top Item Categories</div>
-            <div className="card-body p-5 grid grid-cols-2 gap-2">
-              {cardData.map(({ id, bgColor, textColor, icon: Icon }) => (
-                <div key={id} className="card" style={{ backgroundColor: bgColor, color: textColor }}>
-                  <div className="card-body p-4 flex justify-center items-center">
-                    <Icon className="text-3xl" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </NavLink>
+      <div className="bg-[#0A0D15] p-2 rounded-lg m-4">
+     <div className="flex flex-col md:flex-row flex-wrap gap-4">
+
+        <div className="flex-1 min-w-[300px] bg-[#13161E] rounded-2xl shadow p-6">
+          <div className="flex justify-between">
+            <div>Product Name</div>
+            <div className="bg-[#181D26] p-2 rounded-lg">Price</div>
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Card 1</h2>
+          <p>This is the content of card 1.</p>
         </div>
+
+        <div className="flex-1 min-w-[300px] bg-[#13161E] rounded-2xl shadow p-6">
+          <div className="flex justify-between">
+            <div>Product Name</div>
+            <div className="bg-[#181D26] p-2 rounded-lg">Price</div>
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Card 2</h2>
+          <p>This is the content of card 2.</p>
+        </div>
+
+        <div className="flex-1 min-w-[300px] bg-[#13161E] rounded-2xl shadow p-6">
+          <div className="flex justify-between">
+            <div>Product Name</div>
+            <div className="bg-[#181D26] p-2 rounded-lg">Price</div>
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Card 3</h2>
+          <p>This is the content of card 3.</p>
+        </div>
+        
       </div>
-      <div className="container mx-auto p-4">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <div className="card shadow-md p-4 bg-[#F4F3F3] w-full lg:w-1/3">
-            <div className="card-title text-black">Stock Numbers</div>
-            <div className="card-body p-2 overflow-x-auto">
-              <table className="w-full border-collapse">
-                <tbody>
-                  {storeData2.map((row, index) => (
-                    <tr key={index}>
-                      <td className="text-[12px] p-2">{row.location}</td>
-                      <td className="text-[12px] p-2">{row.orders}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className="card shadow-md p-4 bg-[#F4F3F3] w-full lg:w-1/2">
-            <div className="card-title text-black">Stores list</div>
-            <div className="card-body p-2 overflow-x-auto">
-              <table className="w-full border-collapse">
-                <tbody>
-                  {storeData.map((row, index) => (
-                    <tr key={index}>
-                      <td className="text-[12px] p-2">{row.location}</td>
-                      <td className="text-[12px] p-2">{row.employees} employees</td>
-                      <td className="text-[12px] p-2">{row.items} items</td>
-                      <td className="text-[12px] p-2">{row.orders} Orders</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <div className="flex flex-col md:flex-row gap-4 my-4">
+
+        {/* Card 2 - 2/3 width on md+ screens */}
+        <div className="w-full md:w-2/3 bg-[#13161E] rounded-2xl shadow p-6">
+          <h2 className="text-xl font-semibold mb-2">Card 2</h2>
+          <p>This card takes two thirds of the screen on medium and larger screens.</p>
         </div>
+        {/* Card 1 - 1/3 width on md+ screens */}
+        <div className="w-full md:w-1/3 bg-[#13161E] rounded-2xl shadow p-6">
+          <h2 className="text-xl font-semibold mb-2">Card 1</h2>
+          <p>This card takes one third of the screen on medium and larger screens.</p>
+        </div>
+
       </div>
       <label htmlFor="my-drawer-2" className="btn btn-[#04D9B2] drawer-button lg:hidden">
         Open drawer
       </label>
+    </div>
     </div>
   );
 }
